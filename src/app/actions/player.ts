@@ -2,7 +2,6 @@
 
 import { execFile } from "child_process";
 import { promisify } from "util";
-import path from "node:path";
 
 const execFileAsync = promisify(execFile);
 
@@ -19,11 +18,9 @@ interface YtDlpOutput {
   formats?: YtDlpFormat[];
 }
 
-const ytDlpPath = path.join(process.cwd(), "bin", "yt-dlp");
-
 export async function getAudioInfo(youtubeUrl: string) {
   try {
-    const { stdout, stderr } = await execFileAsync(ytDlpPath, [
+    const { stdout, stderr } = await execFileAsync("yt-dlp", [
       "-j",
       "--no-warnings",
       "--no-playlist",
