@@ -1,20 +1,11 @@
-/* 1. All @import statements at the very top */
-@import "tailwindcss";
 @import "@radix-ui/themes/styles.css";
+@import "tailwindcss";
 
-/* 2. Custom theme variables */
 :root {
   --background: #ffffff;
   --foreground: #171717;
   --gold: #ffaa00;
   --shine: #ffdb42;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-gold: var(--gold);
-  --color-shine: var(--shine);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,36 +15,27 @@
   }
 }
 
-/* 3. Base styles */
-body {
-  font-family: "Love Light", "Great Vibes", cursive;
-  font-weight: 600;
-  font-style: normal;
-  background-color: black;
-  margin: 0;
-  height: 100%;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-gold: var(--gold);
+  --color-shine: var(--shine);
+
+  --font-love: var(--font-love-light), cursive;
+  --font-vibes: var(--font-great-vibes), cursive;
 }
 
-#progress {
-  position: absolute;
-  margin: 8px;
-  margin-left: 105px;
-}
+@layer base {
+  html,
+  body {
+    font-family: var(--font-love-light), cursive;
+    background-color: black;
+    margin: 0;
+    min-height: 100vh;
+  }
 
-#audio-playbar {
-  border-radius: 0;
-  background: black;
-  height: 10px;
-}
-
-progress[value]::-webkit-progress-bar {
-  background-color: #000;
-  border-radius: 0;
-}
-
-progress[value]::-webkit-progress-value {
-  background: #c0c0c0;
+  .radix-themes {
+    --default-font-family: var(--font-love-light), cursive;
+    font-family: var(--font-love-light), cursive;
+  }
 }
