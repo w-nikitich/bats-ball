@@ -131,16 +131,16 @@ export default function Home() {
             spread={90}
             className="col-start-2 text-7xl text-center"
           />
-          <button
+          {/* <button
             className="col-start-3 justify-self-end cursor-pointer"
             onClick={handleOpenLetterList}
           >
             <img src={loveLetter} width={70} height={70} alt="Love letter" />
-          </button>
+          </button> */}
         </div>
       </div>
 
-      <LetterList
+      {/* <LetterList
         isOpen={isLetterListOpen}
         handleCloseModal={handleCloseLetterList}
         handleOpenForm={handleOpenLetterForm}
@@ -157,7 +157,7 @@ export default function Home() {
           handleCloseModal={handleCloseLetter}
           letter={selectedLetter}
         />
-      )}
+      )} */}
 
       {isBallStarted ? (
         <div className="flex flex-col pt-10 items-center bg-black/70 border-2 border-gold rounded-3xl px-30 h-full">

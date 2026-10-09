@@ -25,8 +25,6 @@ export default function LetterItem({
       onOpenChange={(open) => !open && handleCloseModal()}
     >
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" />
-
         <Dialog.Content
           className="flex flex-col items-center overflow-hidden rounded-3xl border border-gold p-6 text-white shadow-2xl sm:p-8"
           style={{

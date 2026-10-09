@@ -29,6 +29,8 @@ export async function getAudioInfo(youtubeUrl: string) {
       youtubeUrl.trim(),
     ]);
 
+    console.log("yt-dlp version:", stdout.trim());
+
     if (stderr) {
       console.warn("yt-dlp stderr:", stderr);
     }
