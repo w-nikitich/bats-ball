@@ -30,22 +30,31 @@ export default function Playlist({ ballStarted }: PlaylistProps) {
   };
 
   const loadTrack = async (index: number) => {
-    if (!audioList[index]) return;
+    const youtubeUrl = audioList[index];
+
+    if (!youtubeUrl) return;
 
     setLoading(true);
+
     try {
-      const data = await getAudioInfo(audioList[index]);
-      if (data?.audioUrl) {
-        setCurrentTrack({
-          title: data.title,
-          artist: data.artist,
-          audioUrl: data.audioUrl,
-        });
-      } else {
-        console.warn("Audio URL is missing in the returned server data.");
+      console.log("Loading YouTube URL:", youtubeUrl);
+
+      const data = await getAudioInfo(youtubeUrl);
+
+      console.log("getAudioInfo returned:", data);
+
+      if (!data?.audioUrl) {
+        console.error("Missing audio URL:", data);
+        return;
       }
-    } catch (err) {
-      console.error("Error calling getAudioInfo:", err);
+
+      setCurrentTrack({
+        title: data.title,
+        artist: data.artist,
+        audioUrl: data.audioUrl,
+      });
+    } catch (error: unknown) {
+      console.error("getAudioInfo failed:", error);
     } finally {
       setLoading(false);
     }
@@ -59,11 +68,9 @@ export default function Playlist({ ballStarted }: PlaylistProps) {
 
   useEffect(() => {
     if (currentTrack?.audioUrl && audioRef.current) {
-      audioRef.current
-        .play()
-        .catch((err) => {
-          console.warn("Autoplay was blocked by browser policy:", err);
-        });
+      audioRef.current.play().catch((err) => {
+        console.warn("Autoplay was blocked by browser policy:", err);
+      });
     }
   }, [currentTrack]);
 
