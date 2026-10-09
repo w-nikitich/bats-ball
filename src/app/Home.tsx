@@ -22,6 +22,7 @@ export default function Home() {
   const [isLetterFormLOpen, setIsLetterFormOpen] = useState(false);
   const [isLetterOpen, setIsLetterOpen] = useState(false);
   const [letter, setLetter] = useState("");
+  const [bgImage, setBgImage] = useState(indleBackgroundImage);
 
   const letters = useLettersStore((state) => state.letters);
   const createLetter = useLettersStore((state) => state.createLetter);
@@ -92,31 +93,35 @@ export default function Home() {
     setIsLetterFormOpen(false);
   };
 
-  function updateBackground() {
-    if (cycle < backgroundImages.length) {
-      document.body.style.backgroundImage =
-        "url('" + backgroundImages[cycle] + "')";
-      cycle += 1;
-    } else {
-      cycle = 0;
-      document.body.style.backgroundImage =
-        "url('" + backgroundImages[cycle] + "')";
-      cycle += 1;
-    }
-  }
-
   useEffect(() => {
-    if (isBallStarted) {
-      updateBackground();
-      const interval = setInterval(updateBackground, 5000);
-      return () => clearInterval(interval);
-    } else {
-      document.body.style.backgroundImage = `url('${indleBackgroundImage}')`;
+    if (!isBallStarted) {
+      setBgImage(indleBackgroundImage);
+      return;
     }
+
+    let cycle = 0;
+    setBgImage(backgroundImages[0]);
+
+    const interval = setInterval(() => {
+      cycle = (cycle + 1) % backgroundImages.length;
+      setBgImage(backgroundImages[cycle]);
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, [isBallStarted]);
 
   return (
-    <div className="relative flex flex-col items-center py-10 h-screen w-screen">
+    <div
+      className="relative flex flex-col items-center py-10 h-screen w-screen bg-cover bg-center bg-no-repeat transition-all duration-500"
+      style={{
+        backgroundImage: `url(${bgImage})`,
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        transitionProperty: "all",
+        transitionDuration: "500ms",
+        backgroundSize: "cover"
+      }}
+    >
       <div className="grid grid-cols-[1fr_auto_1fr] items-center w-full px-10">
         <div className="col-span-3 grid grid-cols-subgrid items-center">
           <ShinyText

@@ -1,13 +1,9 @@
+/* 1. All @import statements at the very top */
 @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Love+Light&display=swap");
-
-/* 1. Define layer precedence: radix comes BEFORE utilities */
-@layer radix, utilities;
-
-/* 2. Import Radix into its own layer */
-@import "@radix-ui/themes/styles.css" layer(radix);
-
 @import "tailwindcss";
+@import "@radix-ui/themes/styles.css";
 
+/* 2. Custom theme variables */
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -29,12 +25,13 @@
   }
 }
 
+/* 3. Base styles */
 body {
   font-family: "Love Light", "Great Vibes", cursive;
   font-weight: 600;
   font-style: normal;
   background-color: black;
-  margin: 0 0;
+  margin: 0;
   height: 100%;
   background-size: cover;
   background-repeat: no-repeat;
