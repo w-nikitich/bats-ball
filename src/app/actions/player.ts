@@ -5,50 +5,81 @@ import { promisify } from "util";
 
 const execFileAsync = promisify(execFile);
 
+interface YtDlpFormat {
+  vcodec?: string;
+  acodec?: string;
+  url?: string;
+}
+
+interface YtDlpOutput {
+  title?: string;
+  uploader?: string;
+  thumbnail?: string;
+  formats?: YtDlpFormat[];
+}
+
 export async function getAudioInfo(youtubeUrl: string) {
-  console.log("--> SERVER ACTION RUNNING FOR:", youtubeUrl);
-
   try {
-    // Sanitize and quote the URL
-    const cleanUrl = youtubeUrl.trim();
-
-    // Execute yt-dlp to dump JSON info
     const { stdout, stderr } = await execFileAsync("yt-dlp", [
       "-j",
       "--no-warnings",
       "--no-playlist",
       "--extractor-args",
       "youtube:player_client=android,web",
-      cleanUrl,
+      youtubeUrl.trim(),
     ]);
 
     if (stderr) {
-      console.warn("--> yt-dlp stderr warning:", stderr);
+      console.warn("yt-dlp stderr:", stderr);
     }
 
-    const output = JSON.parse(stdout);
-    const formats = Array.isArray(output.formats) ? output.formats : [];
+    const output: YtDlpOutput = JSON.parse(stdout);
+    const formats = output.formats ?? [];
 
-    // Filter audio-only formats or best available audio
     const audioFormats = formats.filter(
-      (f: any) => f.vcodec === "none" && f.acodec !== "none",
+      (format) =>
+        format.vcodec === "none" &&
+        format.acodec !== undefined &&
+        format.acodec !== "none" &&
+        Boolean(format.url),
     );
 
     const selectedFormat =
-      audioFormats[0] || formats.find((f: any) => f.acodec !== "none");
+      audioFormats[0] ??
+      formats.find(
+        (format) =>
+          format.acodec !== undefined &&
+          format.acodec !== "none" &&
+          Boolean(format.url),
+      );
+
+    if (!selectedFormat?.url) {
+      console.error("No audio format found", {
+        title: output.title,
+        formatCount: formats.length,
+        audioOnlyFormatCount: audioFormats.length,
+      });
+
+      return null;
+    }
 
     return {
-      title: output.title,
-      artist: output.uploader,
-      thumbnail: output.thumbnail,
-      audioUrl: selectedFormat?.url || null,
+      title: output.title ?? "Unknown track",
+      artist: output.uploader ?? "Unknown artist",
+      thumbnail: output.thumbnail ?? "",
+      audioUrl: selectedFormat.url,
     };
-  } catch (error: any) {
-    // This message WILL print to your terminal running `npm run dev`
-    console.error("================ SERVER ERROR DETAILED ================");
-    console.error("Error Message:", error?.message);
-    console.error("Command stderr:", error?.stderr);
-    console.error("=======================================================");
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Audio extraction failed:", error.message);
+
+      if ("stderr" in error) {
+        console.error("yt-dlp stderr:", error.stderr);
+      }
+    } else {
+      console.error("Audio extraction failed:", error);
+    }
+
     return null;
   }
 }
