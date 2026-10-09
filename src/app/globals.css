@@ -1,0 +1,63 @@
+@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Love+Light&display=swap");
+
+/* 1. Define layer precedence: radix comes BEFORE utilities */
+@layer radix, utilities;
+
+/* 2. Import Radix into its own layer */
+@import "@radix-ui/themes/styles.css" layer(radix);
+
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --gold: #ffaa00;
+  --shine: #ffdb42;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-gold: var(--gold);
+  --color-shine: var(--shine);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  font-family: "Love Light", "Great Vibes", cursive;
+  font-weight: 600;
+  font-style: normal;
+  background-color: black;
+  margin: 0 0;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+#progress {
+  position: absolute;
+  margin: 8px;
+  margin-left: 105px;
+}
+
+#audio-playbar {
+  border-radius: 0;
+  background: black;
+  height: 10px;
+}
+
+progress[value]::-webkit-progress-bar {
+  background-color: #000;
+  border-radius: 0;
+}
+
+progress[value]::-webkit-progress-value {
+  background: #c0c0c0;
+}
